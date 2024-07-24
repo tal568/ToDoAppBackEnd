@@ -9,45 +9,45 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ["id","title", "description", "stage"]
     
-class PermisonSerializer(serializers.ModelSerializer):
+class permissionserializer(serializers.ModelSerializer):
     class Meta:
         model = Permison
         fields = ["id", "user", "level"]
     
 class GroupSerializer(serializers.ModelSerializer):
     tasks = TaskSerializer(many=True, required=False)
-    permisons = PermisonSerializer(many=True,required=False)
+    permissions = permissionserializer(many=True,required=False)
 
     class Meta:
         model = Group
-        fields = ["id", "name", "description", "tasks", "permisons"]
+        fields = ["id", "name", "description", "tasks", "permissions"]
     def create(self, validated_data):
 
-        permisons_data = validated_data.pop('permisons',None)
-        if(permisons_data is None):
-            raise ValidationError("permisons are required:user and level")
+        permissions_data = validated_data.pop('permissions',None)
+        if(permissions_data is None):
+            raise ValidationError("permissions are required:user and level")
         
         group = Group.objects.create(**validated_data)
-        permisons=Permison.objects.bulk_create([Permison(**data) for data in permisons_data])
+        permissions=Permison.objects.bulk_create([Permison(**data) for data in permissions_data])
         group.save()
-        group.permisons.add(*permisons)
+        group.permissions.add(*permissions)
 
         
         return group
     def update(self,instance, validated_data):
-        permisons_data = validated_data.pop('permisons',[])
-        print(len(permisons_data))
-        if(len(permisons_data)>0):
-            instance.permisons.clear()
+        permissions_data = validated_data.pop('permissions',[])
+        print(len(permissions_data))
+        if(len(permissions_data)>0):
+            instance.permissions.clear()
         task_data = validated_data.pop('tasks', [])
         if(len(task_data)>0):
             instance.tasks.clear()
 
         
-        permisons=Permison.objects.bulk_create([Permison(**data) for data in permisons_data])
+        permissions=Permison.objects.bulk_create([Permison(**data) for data in permissions_data])
         tasks=Task.objects.bulk_create([Task(**data) for data in task_data])
 
-        instance.permisons.add(*permisons)
+        instance.permissions.add(*permissions)
         instance.tasks.add(*tasks)
         return super().update(instance, validated_data)
 
