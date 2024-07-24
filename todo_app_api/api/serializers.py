@@ -34,20 +34,5 @@ class GroupSerializer(serializers.ModelSerializer):
 
         
         return group
-    def update(self,instance, validated_data):
-        permissions_data = validated_data.pop('permissions',[])
-        print(len(permissions_data))
-        if(len(permissions_data)>0):
-            instance.permissions.clear()
-        task_data = validated_data.pop('tasks', [])
-        if(len(task_data)>0):
-            instance.tasks.clear()
 
-        
-        permissions=Permison.objects.bulk_create([Permison(**data) for data in permissions_data])
-        tasks=Task.objects.bulk_create([Task(**data) for data in task_data])
-
-        instance.permissions.add(*permissions)
-        instance.tasks.add(*tasks)
-        return super().update(instance, validated_data)
 
