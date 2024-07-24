@@ -1,7 +1,7 @@
 # Create your views here.
 from django.test import TestCase
 from .serializers import GroupSerializer, TaskSerializer, permissionserializer
-from .models import Group, Task, Permison
+from .models import Group, Task, Permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404

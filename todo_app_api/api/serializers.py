@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 from django.core.exceptions import ValidationError
-from .models import Group, Task, Permison
+from .models import Group, Task, Permissions
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,7 +11,7 @@ class TaskSerializer(serializers.ModelSerializer):
     
 class permissionserializer(serializers.ModelSerializer):
     class Meta:
-        model = Permison
+        model = Permissions
         fields = ["id", "user", "level"]
     
 class GroupSerializer(serializers.ModelSerializer):
@@ -28,7 +28,7 @@ class GroupSerializer(serializers.ModelSerializer):
             raise ValidationError("permissions are required:user and level")
         
         group = Group.objects.create(**validated_data)
-        permissions=Permison.objects.bulk_create([Permison(**data) for data in permissions_data])
+        permissions=Permissions.objects.bulk_create([Permissions(**data) for data in permissions_data])
         group.save()
         group.permissions.add(*permissions)
 
