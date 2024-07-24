@@ -1,6 +1,15 @@
 from django.db import models
 from django.forms import ValidationError
 
+class Group(models.Model):
+    name = models.CharField(max_length=200)
+    description=models.TextField(null=True, blank=True)
+    tasks = models.ManyToManyField('Task', related_name='groups', blank=True)
+    permisons = models.ManyToManyField('Permison', related_name='groups')
+    
+    
+    def __str__(self):
+        return self.name
 
 class Task(models.Model):
     title = models.CharField(max_length=200)
@@ -26,13 +35,5 @@ class Permison(models.Model):
 
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES)
 
-class Group(models.Model):
-    name = models.CharField(max_length=200)
-    description=models.TextField(null=True, blank=True)
-    tasks = models.ManyToManyField(Task, blank=True, related_name='groups')
-    permisons = models.ManyToManyField(Permison, related_name='groups')
-    
-    
-    def __str__(self):
-        return self.name
+
 
