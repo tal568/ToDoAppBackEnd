@@ -4,8 +4,6 @@ from django.forms import ValidationError
 class Group(models.Model):
     name = models.CharField(max_length=200)
     description=models.TextField(null=True, blank=True)
-    tasks = models.ManyToManyField('Task', related_name='groups', blank=True)
-    permissions = models.ManyToManyField('Permison', related_name='groups', blank=True)
     
     
     def __str__(self):
@@ -15,6 +13,7 @@ class Task(models.Model):
     title = models.CharField(max_length=200)
     description=models.TextField(null=True, blank=True)
     stage=models.CharField(max_length=100)
+    group=models.ForeignKey(Group, on_delete=models.CASCADE, related_name='tasks', null=True, blank=True)
     
 
 
@@ -23,7 +22,7 @@ class Task(models.Model):
 
 
     
-class Permison(models.Model):
+class Permissions(models.Model):
     #todo add the user token
     
     user = models.CharField(max_length=10)
@@ -34,6 +33,7 @@ class Permison(models.Model):
     ]
 
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='permissions', null=True, blank=True)
 
 
 
