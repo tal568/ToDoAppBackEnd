@@ -5,7 +5,7 @@ class Group(models.Model):
     name = models.CharField(max_length=200)
     description=models.TextField(null=True, blank=True)
     tasks = models.ManyToManyField('Task', related_name='groups', blank=True)
-    permisons = models.ManyToManyField('Permison', related_name='groups')
+    permisons = models.ManyToManyField('Permison', related_name='groups', blank=True)
     
     
     def __str__(self):
