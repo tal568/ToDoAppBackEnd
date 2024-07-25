@@ -62,8 +62,9 @@ def tasks(request, id):
 
 
     if request.method == 'POST':
-        request.data['group'] = id
-        serializer = TaskSerializer(data=request.data)
+        data=request.data.copy()
+        data['group']=id
+        serializer = TaskSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -92,9 +93,10 @@ def permissions(request, id):
             return Response(serializer.errors)
 
     if request.method == 'POST':
-        request.data['group'] = id
+        data=request.data.copy()
+        data['group']=id
         print(request.data)
-        serializer = Permissionserializer(data=request.data)
+        serializer = Permissionserializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
