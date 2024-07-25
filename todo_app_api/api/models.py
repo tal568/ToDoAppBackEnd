@@ -1,9 +1,9 @@
 from django.db import models
-from django.forms import ValidationError
-
+import uuid
 class Group(models.Model):
     name = models.CharField(max_length=200)
     description=models.TextField(null=True, blank=True)
+    id = models.CharField(primary_key=True,default=uuid.uuid4, editable=False, max_length=36)
     
     
     def __str__(self):
