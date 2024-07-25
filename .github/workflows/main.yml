@@ -4,11 +4,13 @@ jobs:
   test_project:
     runs-on: ubuntu-latest # operating system your code will run on
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: actions/cache@v2
       - run: pip install -r requirements.txt # install all our dependencies for the project
       - name: Run tests
         run: |
+          python todo_app_api/manage.py migrate
           python todo_app_api/manage.py test
       
 
