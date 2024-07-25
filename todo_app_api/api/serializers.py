@@ -2,7 +2,6 @@
 
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from .utils.create_group import create_group_with_permissions
 from .models import Group, Task, Permissions
 
 
@@ -27,4 +26,8 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "description", "tasks", "permissions"]
 
     def create(self, validated_data):
-       return create_group_with_permissions(validated_data)
+        permissions_data = validated_data.pop('permissions')
+        group = Group.objects.create(**validated_data)
+        for permission in permissions_data:
+            Permissions.objects.create(group=group, **permission)
+        return group
