@@ -1,10 +1,22 @@
-name: Test Secret
-on: [push]
+name: test_Django
+on: [pull_request, push] # activates the workflow when there is a push or pull request in the repo
+env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  test_project:
+    runs-on: ubuntu-latest # operating system your code will run on
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Check SECRET_KEY
-        run: echo "SECRET_KEY is ${{ secrets.SECRET_KEY }}"
+
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt # install all our dependencies for the project        
+      - name: run tests  
+        run: |
+          cd todo_app_api
+          python manage.py makemigrations
+          python manage.py migrate
+          python manage.py test
+      
+
