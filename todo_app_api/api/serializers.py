@@ -8,13 +8,14 @@ from .models import Group, Task, Permissions
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ["id", "title", "description", "stage"]
+        fields = ["id", "title", "description", "stage", "group"]
 
 
 class Permissionserializer(serializers.ModelSerializer):
     class Meta:
         model = Permissions
-        fields = ["id", "user", "level"]
+
+        fields = ["id", "user", "level", "group"]
 
 
 class GroupSerializer(serializers.ModelSerializer):

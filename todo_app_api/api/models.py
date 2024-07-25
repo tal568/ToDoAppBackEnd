@@ -14,7 +14,7 @@ class Task(models.Model):
     title = models.CharField(max_length=200)
     description=models.TextField(null=True, blank=True)
     stage=models.CharField(max_length=100)
-    group=models.ForeignKey(Group, on_delete=models.CASCADE, related_name='tasks', null=True, blank=True)
+    group=models.ForeignKey(Group, on_delete=models.CASCADE, related_name='tasks')
     
 
 
@@ -24,7 +24,6 @@ class Task(models.Model):
 
     
 class Permissions(models.Model):
-    #todo add the user token
     
     user = models.CharField(max_length=10)
     LEVEL_CHOICES = [
@@ -34,7 +33,7 @@ class Permissions(models.Model):
     ]
 
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='permissions', null=True, blank=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='permissions')
 
 
 
