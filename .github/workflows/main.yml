@@ -4,8 +4,11 @@ jobs:
   test_project:
     runs-on: ubuntu-latest # operating system your code will run on
     steps:
+
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
       - run: pip install -r requirements.txt # install all our dependencies for the project
       - name: Run tests
         run: |
