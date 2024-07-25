@@ -4,7 +4,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Check SECRET_KEY
-        run: echo "SECRET_KEY is ${{ secrets.DJANGO_SECRET }}"
+     - name: Set env as secret
+       env:
+        MY_VAL: ${{ secrets.DJANGO_SECRET }}
+       run: |
+        import os
+        data = open("file", "w")
+        for q in (os.getenv("MY_VAL")):
+          print(q)
+          data.write(q)
+       shell: python
