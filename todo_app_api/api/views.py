@@ -1,6 +1,5 @@
 # Create your views here.
 from django.shortcuts import get_object_or_404
-from django.test import TestCase
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -54,7 +53,7 @@ def tasks(request, id):
     if request.method == 'DELETE':
         task = get_object_or_404(Task, id=id)
         task.delete()
-        return Response(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     if request.method == 'PUT':
         task = get_object_or_404(Task, id=id)
@@ -69,7 +68,7 @@ def tasks(request, id):
         serializer = TaskSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors)
 
