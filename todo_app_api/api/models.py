@@ -8,6 +8,7 @@ class Group(models.Model):
     
     def __str__(self):
         return self.name
+    
 
 class Task(models.Model):
     title = models.CharField(max_length=200)
@@ -28,8 +29,8 @@ class Permissions(models.Model):
     user = models.CharField(max_length=10)
     LEVEL_CHOICES = [
         ('owner', 'Owner'),
-        ('readonly', 'Read Only'),
-        ('readwrite', 'Read Write'),
+        ('readonly', 'ReadOnly'),
+        ('readwrite', 'ReadWrite'),
     ]
 
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES)
