@@ -17,6 +17,9 @@ class GroupTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['name'], group.name)
+
+ 
+    
     def test_get_group(self):
         group = Group.objects.first()
         response = self.client.get(reverse('group', kwargs={'id': group.id}))
@@ -27,6 +30,12 @@ class GroupTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
     #todo test create group
 
+    def test_delete_group(self):
+        group = Group.objects.first()
+        response = self.client.delete(reverse('group', kwargs={'id': group.id}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Group.objects.count(), 0)
+
     def test_get_tasks(self):
         task = Task.objects.first()
         response = self.client.get(reverse('tasks', kwargs={'id': task.id}))
@@ -36,10 +45,21 @@ class GroupTests(TestCase):
         data = {'title': 'new task', 'description': 'new description', 'stage': 'todo'}
         response = self.client.post(reverse('tasks', kwargs={'id': 1}), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    
 
+    def test_delete_task(self):
+        task = Task.objects.first()
+        response = self.client.delete(reverse('tasks', kwargs={'id': task.id}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Task.objects.count(), 0)
     def test_get_permissions(self):
         permission = Permissions.objects.first()
         response = self.client.get(reverse('permissions', kwargs={'id': permission.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['user'], permission.user)
+    
+    def test_create_permission(self):
+        data = {'user': 'new user', 'level': 'readonly'}
+        response = self.client.post(reverse('permissions', kwargs={'id': 1}), data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
        

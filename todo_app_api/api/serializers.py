@@ -6,6 +6,7 @@ from .models import Group, Task, Permissions
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Task
         fields = ["id", "title", "description", "stage", "group"]

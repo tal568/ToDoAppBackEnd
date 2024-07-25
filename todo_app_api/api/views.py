@@ -7,7 +7,7 @@ from .models import Group, Task, Permissions
 from .serializers import GroupSerializer, TaskSerializer, Permissionserializer
 
 
-@api_view(['GET','POST',])
+@api_view(['GET','POST'])
 def groups(request):
 
     if request.method=='GET':
@@ -55,7 +55,8 @@ def tasks(request, id):
 
     if request.method == 'PUT':
         task = get_object_or_404(Task, id=id)
-        serializer = TaskSerializer(task, data=request.data)
+
+        serializer = TaskSerializer(task,data=request.data )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
@@ -85,21 +86,20 @@ def permissions(request, id):
 
     if request.method == 'PUT':
         permission = get_object_or_404(Permissions, id=id)
+
         serializer = Permissionserializer(permission, data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
+            serializer.save(raise_exception=True)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
     if request.method == 'POST':
         data=request.data.copy()
         data['group']=id
         print(request.data)
         serializer = Permissionserializer(data=data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
             
