@@ -25,7 +25,7 @@ class GroupTests(TestCase):
     def test_get_non_existing_group(self):
         response = self.client.get(reverse('group', kwargs={'id': 999}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-   
+    #todo test create group
     def test_get_tasks(self):
         task = Task.objects.first()
         response = self.client.get(reverse('tasks', kwargs={'id': task.id}))
