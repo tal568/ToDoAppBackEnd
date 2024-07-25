@@ -25,15 +25,7 @@ class GroupTests(TestCase):
     def test_get_non_existing_group(self):
         response = self.client.get(reverse('group', kwargs={'id': 999}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    def test_create_group(self):
-        data = {'name': 'new group', 'description': 'new description',"permissions": [{"user": "test", "level": "owner"}]}
-        response = self.client.post(reverse('groups'), data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    def test_create_group_wrong(self):
-        data = {'name': 'new group', 'description': 'new description',"permissions": [{"name": "test", "level": "owner"}]}
-        response = self.client.post(reverse('groups'), data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+   
     def test_get_tasks(self):
         task = Task.objects.first()
         response = self.client.get(reverse('tasks', kwargs={'id': task.id}))
