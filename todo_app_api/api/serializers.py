@@ -26,7 +26,9 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "description", "tasks", "permissions"]
 
     def create(self, validated_data):
-        permissions_data = validated_data.pop('permissions')
+        permissions_data = validated_data.pop('permissions',None)
+        if permissions_data is None:
+            raise ValidationError("permissions are required")
         group = Group.objects.create(**validated_data)
         for permission in permissions_data:
             Permissions.objects.create(group=group, **permission)
