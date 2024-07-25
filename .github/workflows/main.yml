@@ -15,8 +15,7 @@ jobs:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: |
           cd todo_app_api
-          python
-           manage.py makemigrations
+          python manage.py makemigrations
           python manage.py migrate
           python manage.py test
       
