@@ -20,7 +20,7 @@ jobs:
       - name: Lint with ruff
         run: |
           pip install ruff
-          euff format
+          ruff format
           ruff check --output-format=github .
         continue-on-error: true
       - name: run tests  
