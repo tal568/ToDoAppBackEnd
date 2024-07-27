@@ -6,7 +6,6 @@ from .models import Group, Task, Permissions
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Task
         fields = ["id", "title", "description", "stage", "group"]
@@ -28,7 +27,7 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "description", "tasks", "permissions"]
 
     def create(self, validated_data):
-        permissions_data = validated_data.pop('permissions',None)
+        permissions_data = validated_data.pop("permissions", None)
         if permissions_data is None:
             raise ValidationError("permissions are required")
         group = Group.objects.create(**validated_data)
