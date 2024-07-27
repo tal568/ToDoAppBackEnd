@@ -1,5 +1,6 @@
 from django.test import TestCase
-from ..models import Group, Task, Permissions
+
+from ..models import Group, Permissions, Task
 
 
 class TestModels(TestCase):

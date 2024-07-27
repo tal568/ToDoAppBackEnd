@@ -1,12 +1,13 @@
 # Create your views here.
 from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
 from rest_framework import status
-from .models import Group, Task, Permissions
-from .serializers import GroupSerializer, TaskSerializer, Permissionserializer
-from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from .models import Group, Permissions, Task
+from .serializers import GroupSerializer, Permissionserializer, TaskSerializer
 
 
 class GroupsView(APIView):
@@ -26,6 +27,9 @@ class GroupsView(APIView):
 
 
 class GroupView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, id):
         group = get_object_or_404(Group, id=id)
         serializer = GroupSerializer(group)
@@ -45,6 +49,9 @@ class GroupView(APIView):
 
 
 class TasksView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, id):
         tasks = get_object_or_404(Task, id=id)
         serializer = TaskSerializer(tasks)
@@ -79,6 +86,7 @@ class PermissionsView(APIView):
 
     def post(self, request, id):
         data = request.data.copy()
+        data["user"] = request.user
         data["group"] = id
         serializer = Permissionserializer(data=data)
         if serializer.is_valid(raise_exception=True):

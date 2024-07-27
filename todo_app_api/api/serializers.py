@@ -2,7 +2,8 @@
 
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from .models import Group, Task, Permissions
+
+from .models import Group, Permissions, Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -26,7 +27,7 @@ class GroupSerializer(serializers.ModelSerializer):
         model = Group
         fields = ["id", "name", "description", "tasks", "permissions"]
 
-    def create(self, validated_data):
+    def create(self, validated_data)->Group:
         permissions_data = validated_data.pop("permissions", None)
         if permissions_data is None:
             raise ValidationError("permissions are required")

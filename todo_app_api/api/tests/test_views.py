@@ -1,15 +1,17 @@
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
-from ..models import Group, Task, Permissions
 from rest_framework import status
-from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from ..models import Group, Permissions, Task
 
 
 class GroupTests(TestCase):
     def setUp(self):
         self.client = APIClient()
+        # trunk-ignore(bandit/B106)
         user = User.objects.create(username="test", password="test")
         refresh = RefreshToken.for_user(user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
@@ -72,3 +74,8 @@ class GroupTests(TestCase):
         data = {"user": "new user", "level": "readonly"}
         response = self.client.post(reverse("permissions", kwargs={"id": 1}), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_missing_jwt(self):
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer")
+        response = self.client.get(reverse("groups"))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

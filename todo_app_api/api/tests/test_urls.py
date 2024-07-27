@@ -1,6 +1,7 @@
 from django.test import SimpleTestCase
-from django.urls import reverse, resolve
-from ..views import GroupsView, GroupView, TasksView, PermissionsView
+from django.urls import resolve, reverse
+
+from ..views import GroupsView, GroupView, PermissionsView, TasksView
 
 
 class TestUrl(SimpleTestCase):
