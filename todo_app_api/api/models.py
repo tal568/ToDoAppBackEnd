@@ -1,12 +1,22 @@
 from django.db import models
+from enum import Enum
 
 
+
+class ActionType(str, Enum):
+    owner = "owner"
+    readonly = "readonly"
+    readwrite = "readwrite"
+    @classmethod
+    def choices(cls):
+        return [(key.name,key.value) for key in cls]
 class Group(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
+
 
 
 class Task(models.Model):
@@ -27,14 +37,9 @@ class Task(models.Model):
 
 
 class Permissions(models.Model):
-    user = models.CharField(max_length=10)
-    LEVEL_CHOICES = [
-        ("owner", "Owner"),
-        ("readonly", "ReadOnly"),
-        ("readwrite", "ReadWrite"),
-    ]
-
-    level = models.CharField(max_length=10, choices=LEVEL_CHOICES)
+    user = models.CharField(max_length=15)
+    print(ActionType.readonly)
+    level = models.CharField(max_length=10, choices=ActionType.choices())
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, related_name="permissions", blank=True
     )

@@ -5,8 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
-from .models import Group, Permissions, Task
+from .utils.cheak_permission_level import check_permission_level
+from .models import ActionType, Group, Permissions, Task
 from .serializers import GroupSerializer, Permissionserializer, TaskSerializer
 
 
@@ -79,6 +79,8 @@ class TasksView(APIView):
 
 
 class PermissionsView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, id):
         permissions = get_object_or_404(Permissions, id=id)
         serializer = Permissionserializer(permissions)
@@ -86,7 +88,9 @@ class PermissionsView(APIView):
 
     def post(self, request, id):
         data = request.data.copy()
-        data["user"] = request.user
+        print(request.user)
+
+        data["user"] = str(request.user)
         data["group"] = id
         serializer = Permissionserializer(data=data)
         if serializer.is_valid(raise_exception=True):
@@ -99,7 +103,7 @@ class PermissionsView(APIView):
         if serializer.is_valid():
             serializer.save(raise_exception=True)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+    @check_permission_level
     def delete(self, request, id):
         permission = get_object_or_404(Permissions, id=id)
         permission.delete()
