@@ -1,15 +1,23 @@
 
-from django.test import TestCase,Client
+from django.test import TestCase
 from django.urls import reverse
 from ..models import Group, Task, Permissions
 from rest_framework import status
+from django.contrib.auth.models import User
+from rest_framework.test import APIClient
+from rest_framework_simplejwt.tokens import RefreshToken
 class GroupTests(TestCase):
     def setUp(self):
-        self.client=Client()
+        self.client=APIClient()
+        user=User.objects.create(username='test',password='test')
+        refresh=RefreshToken.for_user(user)
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
         group=Group(name='test group', description='test description')
         group.save()
         Permissions.objects.create(user='test', level='owner', group=group)
         Task.objects.create(title='test task', description='test description', stage='todo', group=group)
+        
+
 
     def test_get_groups(self):
         group=Group.objects.first()

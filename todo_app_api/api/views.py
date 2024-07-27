@@ -5,101 +5,86 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Group, Task, Permissions
 from .serializers import GroupSerializer, TaskSerializer, Permissionserializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
-@api_view(['GET','POST'])
-def groups(request):
-
-    if request.method=='GET':
-        groups=Group.objects.all()
-        serializer=GroupSerializer(groups, many=True)
+class GroupsView(APIView):
+    def get(self, request):
+        groups = Group.objects.all()
+        serializer = GroupSerializer(groups, many=True)
         return Response(serializer.data)
-    if request.method=='POST':
-        serializer=GroupSerializer(data=request.data)
+
+    def post(self, request):
+        serializer = GroupSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-   
-@api_view(['GET','PUT','DELETE'])
-def group(request, id):
-    if request.method=='GET':
-        group=get_object_or_404(Group, id=id)
-        serializer=GroupSerializer(group)
+class GroupView(APIView):
+    def get(self, request, id):
+        group = get_object_or_404(Group, id=id)
+        serializer = GroupSerializer(group)
         return Response(serializer.data)
-   
-    if request.method=='DELETE':
-        group=get_object_or_404(Group, id=id)
-        group.delete()
-        return Response(status=204)
-    if request.method=='PUT':
-        group=get_object_or_404(Group, id=id)
-        serializer=GroupSerializer(group, data=request.data)
+    def put(self, request, id):
+        group = get_object_or_404(Group, id=id)
+        serializer = GroupSerializer(group, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
-
-
-
-@api_view(['GET', 'POST', 'PUT', 'DELETE'])
-def tasks(request, id):
-    if request.method == 'GET':
-        task = get_object_or_404(Task, id=id)
-        serializer = TaskSerializer(task)
-        return Response(serializer.data)
-
-    if request.method == 'DELETE':
-        task = get_object_or_404(Task, id=id)
-        task.delete()
+    def delete(self, request, id):
+        group = get_object_or_404(Group, id=id)
+        group.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    if request.method == 'PUT':
-        task = get_object_or_404(Task, id=id)
-
-        serializer = TaskSerializer(task,data=request.data )
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
-
-
-    if request.method == 'POST':
+class TasksView(APIView):
+    def get(self, request, id):
+        tasks = get_object_or_404(Task, id=id)
+        serializer = TaskSerializer(tasks)
+        return Response(serializer.data)
+    def post(self, request, id):
         data=request.data.copy()
         data['group']=id
         serializer = TaskSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-
-@api_view(['GET', 'POST', 'PUT', 'DELETE'])
-def permissions(request, id):
-    if request.method == 'GET':
-        permission = get_object_or_404(Permissions, id=id)
-        serializer = Permissionserializer(permission)
-        return Response(serializer.data)
-
-    if request.method == 'DELETE':
-        permission = get_object_or_404(Permissions, id=id)
-        permission.delete()
+    def put(self, request, id):
+        task = get_object_or_404(Task, id=id)
+        serializer = TaskSerializer(task, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+    def delete(self, request, id):
+        task = get_object_or_404(Task, id=id)
+        task.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    if request.method == 'PUT':
-        permission = get_object_or_404(Permissions, id=id)
+class PermissionsView(APIView):
+    def get(self, request, id):
+        permissions = get_object_or_404(Permissions, id=id)
+        serializer = Permissionserializer(permissions)
+        return Response(serializer.data)
 
-        serializer = Permissionserializer(permission, data=request.data)
-        if serializer.is_valid():
-            serializer.save(raise_exception=True)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-    if request.method == 'POST':
+    def post(self, request, id):
         data=request.data.copy()
         data['group']=id
-        print(request.data)
         serializer = Permissionserializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-            
+    def put(self, request, id):
+        permission = get_object_or_404(Permissions, id=id)
+        serializer = Permissionserializer(permission, data=request.data)
+        if serializer.is_valid():
+            serializer.save(raise_exception=True)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, id):
+        permission = get_object_or_404(Permissions, id=id)
+        permission.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+

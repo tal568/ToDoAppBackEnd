@@ -2,12 +2,12 @@
 
 from django.urls import path
 
-from . import views
+from .views import GroupsView, GroupView, TasksView, PermissionsView
 
 urlpatterns = [
-    path('groups', views.groups, name="groups"),
-    path('group/<int:id>', views.group, name="group"),
-    path('task/<int:id>', views.tasks, name="tasks"),
-    path('permissions/<int:id>', views.permissions, name="permissions"),
+    path('groups', GroupsView.as_view(), name="groups"),
+    path('group/<int:id>', GroupView.as_view(), name="group"),
+    path('task/<int:id>', TasksView.as_view(), name="tasks"),
+    path('permissions/<int:id>', PermissionsView.as_view(), name="permissions"),
    ]
 
