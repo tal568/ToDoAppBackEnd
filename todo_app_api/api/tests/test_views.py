@@ -54,8 +54,8 @@ class GroupTests(TestCase):
         self.assertEqual(response.data["title"], task.title)
 
     def test_create_task(self):
-        data = {"title": "new task", "description": "new description", "stage": "todo"}
-        response = self.client.post(reverse("tasks", kwargs={"id": 1}), data)
+        data = {"title": "new task", "description": "new description", "stage": "todo", "group": 1}
+        response = self.client.post(reverse("tasks"), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_delete_task(self):
@@ -71,8 +71,8 @@ class GroupTests(TestCase):
         self.assertEqual(response.data["user"], permission.user)
 
     def test_create_permission(self):
-        data = {"user": "new user", "level": "read"}
-        response = self.client.post(reverse("permissions", kwargs={"id": 1}), data)
+        data = {"user": "new user", "level": "read", "group": 1}
+        response = self.client.post(reverse("permissions"), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_missing_jwt(self):

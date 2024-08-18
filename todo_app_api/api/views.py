@@ -57,9 +57,8 @@ class TasksView(APIView):
         serializer = TaskSerializer(tasks)
         return Response(serializer.data)
 
-    def post(self, request, id):
+    def post(self, request):
         data = request.data.copy()
-        data["group"] = id
         serializer = TaskSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -87,12 +86,9 @@ class PermissionsView(APIView):
         serializer = Permissionserializer(permissions)
         return Response(serializer.data)
 
-    def post(self, request, id):
+    def post(self, request):
         data = request.data.copy()
-        print(request.user)
-
         data["user"] = str(request.user)
-        data["group"] = id
         serializer = Permissionserializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
