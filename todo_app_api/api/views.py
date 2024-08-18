@@ -98,7 +98,6 @@ class PermissionsView(APIView):
 
     def post(self, request):
         data = request.data.copy()
-        data["user"] = str(request.user)
         action = ActionType.modify
         if data.get("level") == ActionType.owner:
             action = ActionType.owner

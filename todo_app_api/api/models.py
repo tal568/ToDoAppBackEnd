@@ -50,9 +50,6 @@ class Permissions(models.Model):
         Group, on_delete=models.CASCADE, related_name="permissions", blank=True
     )
 
-    def __str__(self):
-        return self.user
-
     def save(self, *args, **kwargs):
         if not self.group:
             raise ValueError("Group is required")

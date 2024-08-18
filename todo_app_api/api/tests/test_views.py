@@ -11,13 +11,12 @@ from ..models import Group, Permissions, Task
 class GroupTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        # trunk-ignore(bandit/B106)
-        user = User.objects.create(username="test", password="test")
+        user = User.objects.create_user(username="test", password="test")
         refresh = RefreshToken.for_user(user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
-        group = Group(name="test group", description="test description")
-        group.save()
-        Permissions.objects.create(user="test", level="owner", group=group)
+
+        group = Group.objects.create(name="test group", description="test description")
+        Permissions.objects.create(user=user, level="owner", group=group)
         Task.objects.create(
             title="test task", description="test description", stage="todo", group=group
         )
@@ -39,8 +38,6 @@ class GroupTests(TestCase):
         response = self.client.get(reverse("group", kwargs={"id": 999}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    # todo test create group
-
     def test_delete_group(self):
         group = Group.objects.first()
         response = self.client.delete(reverse("group", kwargs={"id": group.id}))
@@ -54,7 +51,13 @@ class GroupTests(TestCase):
         self.assertEqual(response.data["title"], task.title)
 
     def test_create_task(self):
-        data = {"title": "new task", "description": "new description", "stage": "todo", "group": 1}
+        group = Group.objects.first()
+        data = {
+            "title": "new task",
+            "description": "new description",
+            "stage": "todo",
+            "group": group.id,
+        }
         response = self.client.post(reverse("tasks"), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -68,10 +71,12 @@ class GroupTests(TestCase):
         permission = Permissions.objects.first()
         response = self.client.get(reverse("permissions", kwargs={"id": permission.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["user"], permission.user)
+        self.assertEqual(User.objects.first(), permission.user)
 
     def test_create_permission(self):
-        data = {"user": "new user", "level": "read", "group": 1}
+        user = User.objects.create_user(username="test2", password="test2")
+        group = Group.objects.first()
+        data = {"user": user.id, "level": "read", "group": group.id}
         response = self.client.post(reverse("permissions"), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

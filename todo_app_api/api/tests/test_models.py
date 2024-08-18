@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.test import TestCase
 
 from ..models import Group, Permissions, Task
@@ -5,9 +6,11 @@ from ..models import Group, Permissions, Task
 
 class TestModels(TestCase):
     def setUp(self):
-        self.group = Group(name="test group", description="test description")
-        self.group.save()
-        Permissions.objects.create(user="test", level="owner", group=self.group)
+        self.user = User.objects.create_user(username="test", password="test")
+        self.group = Group.objects.create(
+            name="test group", description="test description"
+        )
+        Permissions.objects.create(user=self.user, level="owner", group=self.group)
         Task.objects.create(
             title="test task",
             description="test description",
@@ -29,6 +32,6 @@ class TestModels(TestCase):
 
     def test_permissions(self):
         permission = Permissions.objects.first()
-        self.assertEqual(permission.user, "test")
+        self.assertEqual(permission.user, self.user)
         self.assertEqual(permission.level, "owner")
         self.assertEqual(permission.group, self.group)
