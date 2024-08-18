@@ -12,6 +12,8 @@ class ActionType(str, Enum):
     @classmethod
     def choices(cls):
         return [(key.name,key.value) for key in cls]
+    def __str__(self):
+        return self.name
 class Group(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
@@ -48,7 +50,9 @@ class Permissions(models.Model):
     def __str__(self):
         return self.user
 
-    def save(self, *args, **kwargs):
-        if not self.group:
-            raise ValueError("Group is required")
-        super(Permissions, self).save(*args, **kwargs)
+def save(self, *args, **kwargs):
+    if not self.group:
+        raise ValueError("Group is required")
+    if Permissions.objects.filter(user=self.user, group=self.group).exists():
+        raise ValueError("This user already has permissions for this group")
+    super(Permissions, self).save(*args, **kwargs)
