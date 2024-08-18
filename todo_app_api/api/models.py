@@ -4,9 +4,11 @@ from enum import Enum
 
 
 class ActionType(str, Enum):
-    owner = "owner"
-    readonly = "readonly"
-    readwrite = "readwrite"
+    owner = 4
+    manage_permissions = 3
+    modify=2
+    read=1
+
     @classmethod
     def choices(cls):
         return [(key.name,key.value) for key in cls]
@@ -38,8 +40,7 @@ class Task(models.Model):
 
 class Permissions(models.Model):
     user = models.CharField(max_length=15)
-    print(ActionType.readonly)
-    level = models.CharField(max_length=10, choices=ActionType.choices())
+    level = models.CharField(max_length=18,choices=ActionType.choices())
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, related_name="permissions", blank=True
     )
