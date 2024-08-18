@@ -71,7 +71,7 @@ class GroupTests(TestCase):
         self.assertEqual(response.data["user"], permission.user)
 
     def test_create_permission(self):
-        data = {"user": "new user", "level": "readonly"}
+        data = {"user": "new user", "level": "read"}
         response = self.client.post(reverse("permissions", kwargs={"id": 1}), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -79,3 +79,6 @@ class GroupTests(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer")
         response = self.client.get(reverse("groups"))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def doCleanups(self) -> None:
+        return super().doCleanups()
