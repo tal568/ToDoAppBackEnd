@@ -1,6 +1,7 @@
 # the urls of the api with django
 
 from django.urls import path
+
 from .views import GroupsView, GroupView, PermissionsView, TasksView
 
 urlpatterns = [
@@ -11,5 +12,4 @@ urlpatterns = [
     path("task", TasksView.as_view(), name="tasks"),
     path("permissions/<int:id>", PermissionsView.as_view(), name="permissions"),
     path("permissions", PermissionsView.as_view(), name="permissions"),
-
 ]
