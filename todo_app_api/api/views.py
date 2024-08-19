@@ -126,3 +126,5 @@ class PermissionsView(APIView):
         require_permission(request.user, permission.group.id, action)
         permission.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
